@@ -1,0 +1,3047 @@
+{
+ "cells": [
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "<div style=\"border:solid green 2px; padding: 20px\">\n",
+    "    \n",
+    "<b>Hello, Mohamad!</b> We're glad to see you in code-reviewer territory. You've done a great job on the project, but let's get to know each other and make it even better! We have our own atmosphere here and a few rules:\n",
+    "\n",
+    "\n",
+    "1. I work as a code reviewer, and my main goal is not to point out your mistakes, but to share my experience and help you become a data analyst.\n",
+    "2. We speak on a first-come-first-served basis.\n",
+    "3. if you want to write or ask a question, don't be shy. Just choose your color for your comment.  \n",
+    "4. this is a training project, you don't have to be afraid of making a mistake.  \n",
+    "5. You have an unlimited number of attempts to pass the project.  \n",
+    "6. Let's Go!\n",
+    "\n",
+    "\n",
+    "---\n",
+    "I'll be color-coding comments, please don't delete them:\n",
+    "\n",
+    "<div class=\"alert alert-block alert-danger\">✍\n",
+    "    \n",
+    "\n",
+    "__Reviewer's comment №1__\n",
+    "\n",
+    "Needs fixing. The block requires some corrections. Work can't be accepted with the red comments.\n",
+    "</div>\n",
+    "    \n",
+    "---\n",
+    "\n",
+    "<div class=\"alert alert-block alert-warning\">📝\n",
+    "    \n",
+    "\n",
+    "__Reviewer's comment №1__\n",
+    "\n",
+    "\n",
+    "Remarks. Some recommendations.\n",
+    "</div>\n",
+    "\n",
+    "---\n",
+    "\n",
+    "<div class=\"alert alert-block alert-success\">✔️\n",
+    "    \n",
+    "\n",
+    "__Reviewer's comment №1__\n",
+    "\n",
+    "Success. Everything is done succesfully.\n",
+    "</div>\n",
+    "    \n",
+    "---\n",
+    "    \n",
+    "I suggest that we work on the project in dialogue: if you change something in the project or respond to my comments, write about it. It will be easier for me to track changes if you highlight your comments:   \n",
+    "    \n",
+    "<div class=\"alert alert-info\"> <b>Student сomments:</b> Student answer..</div>\n",
+    "    \n",
+    "All this will help to make the recheck of your project faster. If you have any questions about my comments, let me know, we'll figure it out together :)   \n",
+    "    \n",
+    "---"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "# Megaline\n",
+    "\n",
+    "### The purpose of this project is to create a model that would evaluate the behavior of subscribers and suggest either Smart or Ultra, two of Megaline's most recent plans. This would boost the company's strength in the market and assist in driving more revenue."
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "<div class=\"alert alert-block alert-success\">✔️\n",
+    "    \n",
+    "\n",
+    "__Reviewer's comment №1__\n",
+    "\n",
+    "An excellent practice is to describe the goal and main steps in your own words (a skill that will help a lot on a final project). "
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 1,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "# Libraries\n",
+    "\n",
+    "import pandas as pd\n",
+    "import numpy as np\n",
+    "from sklearn.model_selection import train_test_split\n",
+    "from sklearn.tree import DecisionTreeClassifier\n",
+    "from sklearn.ensemble import RandomForestClassifier\n",
+    "from sklearn.metrics import classification_report, accuracy_score\n",
+    "from sklearn.linear_model import LogisticRegression\n",
+    "from sklearn.metrics import classification_report, accuracy_score\n",
+    "from sklearn.metrics import accuracy_score\n",
+    "from sklearn.preprocessing import StandardScaler\n",
+    "from sklearn.model_selection import GridSearchCV\n",
+    "from sklearn.impute import SimpleImputer\n",
+    "from sklearn.metrics import classification_report, accuracy_score, confusion_matrix"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "### Libraries are imported."
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 2,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "# Read the CSV file into a DataFrame\n",
+    "df = pd.read_csv(\"/datasets/users_behavior.csv\")"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "### The above dataframe is for the Users Behavior of Megaline cellular company."
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 3,
+   "metadata": {
+    "scrolled": false
+   },
+   "outputs": [
+    {
+     "data": {
+      "text/html": [
+       "<div>\n",
+       "<style scoped>\n",
+       "    .dataframe tbody tr th:only-of-type {\n",
+       "        vertical-align: middle;\n",
+       "    }\n",
+       "\n",
+       "    .dataframe tbody tr th {\n",
+       "        vertical-align: top;\n",
+       "    }\n",
+       "\n",
+       "    .dataframe thead th {\n",
+       "        text-align: right;\n",
+       "    }\n",
+       "</style>\n",
+       "<table border=\"1\" class=\"dataframe\">\n",
+       "  <thead>\n",
+       "    <tr style=\"text-align: right;\">\n",
+       "      <th></th>\n",
+       "      <th>calls</th>\n",
+       "      <th>minutes</th>\n",
+       "      <th>messages</th>\n",
+       "      <th>mb_used</th>\n",
+       "      <th>is_ultra</th>\n",
+       "    </tr>\n",
+       "  </thead>\n",
+       "  <tbody>\n",
+       "    <tr>\n",
+       "      <th>count</th>\n",
+       "      <td>3214.000000</td>\n",
+       "      <td>3214.000000</td>\n",
+       "      <td>3214.000000</td>\n",
+       "      <td>3214.000000</td>\n",
+       "      <td>3214.000000</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>mean</th>\n",
+       "      <td>63.038892</td>\n",
+       "      <td>438.208787</td>\n",
+       "      <td>38.281269</td>\n",
+       "      <td>17207.673836</td>\n",
+       "      <td>0.306472</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>std</th>\n",
+       "      <td>33.236368</td>\n",
+       "      <td>234.569872</td>\n",
+       "      <td>36.148326</td>\n",
+       "      <td>7570.968246</td>\n",
+       "      <td>0.461100</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>min</th>\n",
+       "      <td>0.000000</td>\n",
+       "      <td>0.000000</td>\n",
+       "      <td>0.000000</td>\n",
+       "      <td>0.000000</td>\n",
+       "      <td>0.000000</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>25%</th>\n",
+       "      <td>40.000000</td>\n",
+       "      <td>274.575000</td>\n",
+       "      <td>9.000000</td>\n",
+       "      <td>12491.902500</td>\n",
+       "      <td>0.000000</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>50%</th>\n",
+       "      <td>62.000000</td>\n",
+       "      <td>430.600000</td>\n",
+       "      <td>30.000000</td>\n",
+       "      <td>16943.235000</td>\n",
+       "      <td>0.000000</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>75%</th>\n",
+       "      <td>82.000000</td>\n",
+       "      <td>571.927500</td>\n",
+       "      <td>57.000000</td>\n",
+       "      <td>21424.700000</td>\n",
+       "      <td>1.000000</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>max</th>\n",
+       "      <td>244.000000</td>\n",
+       "      <td>1632.060000</td>\n",
+       "      <td>224.000000</td>\n",
+       "      <td>49745.730000</td>\n",
+       "      <td>1.000000</td>\n",
+       "    </tr>\n",
+       "  </tbody>\n",
+       "</table>\n",
+       "</div>"
+      ],
+      "text/plain": [
+       "             calls      minutes     messages       mb_used     is_ultra\n",
+       "count  3214.000000  3214.000000  3214.000000   3214.000000  3214.000000\n",
+       "mean     63.038892   438.208787    38.281269  17207.673836     0.306472\n",
+       "std      33.236368   234.569872    36.148326   7570.968246     0.461100\n",
+       "min       0.000000     0.000000     0.000000      0.000000     0.000000\n",
+       "25%      40.000000   274.575000     9.000000  12491.902500     0.000000\n",
+       "50%      62.000000   430.600000    30.000000  16943.235000     0.000000\n",
+       "75%      82.000000   571.927500    57.000000  21424.700000     1.000000\n",
+       "max     244.000000  1632.060000   224.000000  49745.730000     1.000000"
+      ]
+     },
+     "execution_count": 3,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "# Working code\n",
+    "\n",
+    "df.describe()"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "### There are 5 columns in this dataframe: Calls, Minutes, Messages, Mb_used, and is_ultra."
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 4,
+   "metadata": {
+    "scrolled": true
+   },
+   "outputs": [
+    {
+     "data": {
+      "text/html": [
+       "<div>\n",
+       "<style scoped>\n",
+       "    .dataframe tbody tr th:only-of-type {\n",
+       "        vertical-align: middle;\n",
+       "    }\n",
+       "\n",
+       "    .dataframe tbody tr th {\n",
+       "        vertical-align: top;\n",
+       "    }\n",
+       "\n",
+       "    .dataframe thead th {\n",
+       "        text-align: right;\n",
+       "    }\n",
+       "</style>\n",
+       "<table border=\"1\" class=\"dataframe\">\n",
+       "  <thead>\n",
+       "    <tr style=\"text-align: right;\">\n",
+       "      <th></th>\n",
+       "      <th>calls</th>\n",
+       "      <th>minutes</th>\n",
+       "      <th>messages</th>\n",
+       "      <th>mb_used</th>\n",
+       "      <th>is_ultra</th>\n",
+       "    </tr>\n",
+       "  </thead>\n",
+       "  <tbody>\n",
+       "    <tr>\n",
+       "      <th>0</th>\n",
+       "      <td>40.0</td>\n",
+       "      <td>311.90</td>\n",
+       "      <td>83.0</td>\n",
+       "      <td>19915.42</td>\n",
+       "      <td>0</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>1</th>\n",
+       "      <td>85.0</td>\n",
+       "      <td>516.75</td>\n",
+       "      <td>56.0</td>\n",
+       "      <td>22696.96</td>\n",
+       "      <td>0</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>2</th>\n",
+       "      <td>77.0</td>\n",
+       "      <td>467.66</td>\n",
+       "      <td>86.0</td>\n",
+       "      <td>21060.45</td>\n",
+       "      <td>0</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>3</th>\n",
+       "      <td>106.0</td>\n",
+       "      <td>745.53</td>\n",
+       "      <td>81.0</td>\n",
+       "      <td>8437.39</td>\n",
+       "      <td>1</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>4</th>\n",
+       "      <td>66.0</td>\n",
+       "      <td>418.74</td>\n",
+       "      <td>1.0</td>\n",
+       "      <td>14502.75</td>\n",
+       "      <td>0</td>\n",
+       "    </tr>\n",
+       "  </tbody>\n",
+       "</table>\n",
+       "</div>"
+      ],
+      "text/plain": [
+       "   calls  minutes  messages   mb_used  is_ultra\n",
+       "0   40.0   311.90      83.0  19915.42         0\n",
+       "1   85.0   516.75      56.0  22696.96         0\n",
+       "2   77.0   467.66      86.0  21060.45         0\n",
+       "3  106.0   745.53      81.0   8437.39         1\n",
+       "4   66.0   418.74       1.0  14502.75         0"
+      ]
+     },
+     "execution_count": 4,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "# Working code\n",
+    "\n",
+    "df.head()"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 5,
+   "metadata": {
+    "scrolled": true
+   },
+   "outputs": [
+    {
+     "data": {
+      "text/plain": [
+       "calls       0\n",
+       "minutes     0\n",
+       "messages    0\n",
+       "mb_used     0\n",
+       "is_ultra    0\n",
+       "dtype: int64"
+      ]
+     },
+     "execution_count": 5,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "# Working code\n",
+    "\n",
+    "df.isna().sum()"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 6,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "# Splitting the Dataset\n",
+    "\n",
+    "# working code\n",
+    "\n",
+    "X = df[['calls', 'minutes', 'messages', 'mb_used']]\n",
+    "y = df['is_ultra']"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "### The Dataset is splitted into 2 parts, X and Y. Each contain different columns."
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": []
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 7,
+   "metadata": {
+    "scrolled": true
+   },
+   "outputs": [
+    {
+     "data": {
+      "text/plain": [
+       "((2249, 4), (482, 4), (483, 4))"
+      ]
+     },
+     "execution_count": 7,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "# Training and Testing sets (70% train, 30% test)\n",
+    "\n",
+    "X_train, X_temp, y_train, y_temp = train_test_split(X, y, test_size=0.30, random_state=42)\n",
+    "\n",
+    "#  training and validation sets (50% validation, 50% test)\n",
+    "\n",
+    "X_valid, X_test, y_valid, y_test = train_test_split(X_temp, y_temp, test_size=0.50, random_state=42)\n",
+    "\n",
+    "X_train.shape, X_valid.shape, X_test.shape"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "<div class=\"alert alert-block alert-warning\">📝\n",
+    "    \n",
+    "\n",
+    "__Reviewer's comment №1__\n",
+    "\n",
+    "\n",
+    "1. It is good here, random_state is fixed. We have ensured reproducibility of the results of splitting the sample into training (training) / test / validation samples, so the subsamples will be identical in all subsequent runs of our code.\n",
+    "    \n",
+    "2. Fraction of train/valid/test sizes 3:1:1 is good.\n",
+    "</div>"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "### The shapes of resulting datasets are: 2249 samples and 4 features each, 482 samples and 4 features each, 483 samples and 4 features each."
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 8,
+   "metadata": {
+    "scrolled": true
+   },
+   "outputs": [
+    {
+     "data": {
+      "text/plain": [
+       "array([[-0.07719408, -0.27405046,  0.92452738, -0.6824304 ],\n",
+       "       [-1.78100611, -1.77626171,  0.09954342,  0.73530975],\n",
+       "       [-0.31632559, -0.30480279, -1.05543412,  2.06146575],\n",
+       "       [-1.3924174 , -1.51987947, -0.58794321, -1.53928348],\n",
+       "       [ 0.75976622,  0.97896962, -0.23045017,  0.9174233 ]])"
+      ]
+     },
+     "execution_count": 8,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "# Scaling Numerical Features\n",
+    "scaler = StandardScaler()\n",
+    "X_train = scaler.fit_transform(X_train)\n",
+    "X_valid = scaler.transform(X_valid)\n",
+    "X_test = scaler.transform(X_test)\n",
+    "X_train[:5]"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "### The first five samples in the training set's impacted values are displayed in this array. The training set's related feature's mean and standard deviation were used to modify the values."
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 9,
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "text/plain": [
+       "0.7655601659751037"
+      ]
+     },
+     "execution_count": 9,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "# Baseline model\n",
+    "\n",
+    "model = LogisticRegression()\n",
+    "model.fit(X_train, y_train)\n",
+    "\n",
+    "y_pred = model.predict(X_valid)\n",
+    "\n",
+    "# accuracy\n",
+    "np.mean(y_pred == y_valid)"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "### The model correctly predicted approximately 76.56% of the validation set instances."
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 10,
+   "metadata": {
+    "scrolled": true
+   },
+   "outputs": [
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "Decision Tree Classification Report:\n",
+      "              precision    recall  f1-score   support\n",
+      "\n",
+      "           0       0.77      0.93      0.84       319\n",
+      "           1       0.78      0.46      0.58       164\n",
+      "\n",
+      "    accuracy                           0.77       483\n",
+      "   macro avg       0.78      0.70      0.71       483\n",
+      "weighted avg       0.77      0.77      0.75       483\n",
+      "\n",
+      "Confusion Matrix:\n",
+      "[[298  21]\n",
+      " [ 89  75]]\n",
+      "Accuracy of the best Decision Tree model: 0.77\n"
+     ]
+    }
+   ],
+   "source": [
+    "# Hyperparameters and their ranges for Decision Trees\n",
+    "param_grid_dt = {\n",
+    "    'max_depth': [3, 5, 7, 10],\n",
+    "    'min_samples_split': [2, 5, 10],\n",
+    "    'min_samples_leaf': [1, 2, 4]\n",
+    "}\n",
+    "\n",
+    "# Initialize Decision Tree classifier\n",
+    "dt_classifier = DecisionTreeClassifier(random_state=42)\n",
+    "\n",
+    "# Perform grid search with cross-validation\n",
+    "grid_search_dt = GridSearchCV(estimator=dt_classifier, param_grid=param_grid_dt, cv=5, scoring='accuracy')\n",
+    "\n",
+    "# Fit the grid search to the data\n",
+    "grid_search_dt.fit(X_train, y_train)\n",
+    "\n",
+    "# Get the best hyperparameters\n",
+    "best_params_dt = grid_search_dt.best_params_\n",
+    "best_dt_model = grid_search_dt.best_estimator_\n",
+    "\n",
+    "# Predict on the test set\n",
+    "y_pred_dt = best_dt_model.predict(X_test)\n",
+    "\n",
+    "# Print classification report\n",
+    "print(\"Decision Tree Classification Report:\")\n",
+    "print(classification_report(y_test, y_pred_dt))\n",
+    "\n",
+    "# Print confusion matrix\n",
+    "conf_matrix_dt = confusion_matrix(y_test, y_pred_dt)\n",
+    "print(\"Confusion Matrix:\")\n",
+    "print(conf_matrix_dt)\n",
+    "\n",
+    "# Evaluate the best model on the test set\n",
+    "accuracy_dt = best_dt_model.score(X_test, y_test)\n",
+    "print(f\"Accuracy of the best Decision Tree model: {accuracy_dt:.2f}\")"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "### Confusion Matrix: \n",
+    "298: True negatives (class 0 correctly predicted).\n",
+    "21: False positives (class 0 incorrectly predicted as class 1).\n",
+    "89: False negatives (class 1 incorrectly predicted as class 0).\n",
+    "75: True positives (class 1 correctly predicted).\n",
+    "\n",
+    "### Decision Trees Accuracy: \n",
+    "The overall accuracy of the best Decision Tree model on the test set is 77%."
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 11,
+   "metadata": {},
+   "outputs": [
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "Logistic Regression Classification Report:\n",
+      "              precision    recall  f1-score   support\n",
+      "\n",
+      "           0       0.71      0.97      0.82       319\n",
+      "           1       0.82      0.24      0.38       164\n",
+      "\n",
+      "    accuracy                           0.72       483\n",
+      "   macro avg       0.77      0.61      0.60       483\n",
+      "weighted avg       0.75      0.72      0.67       483\n",
+      "\n",
+      "Accuracy of the Linear Regression Model: 0.7246\n"
+     ]
+    }
+   ],
+   "source": [
+    "#  Hyperparameters tuning for Linear Regression\n",
+    "param_grid_lr = {\n",
+    "    'C': [0.01, 0.1, 1, 10, 100],\n",
+    "    'solver': ['liblinear', 'lbfgs'],\n",
+    "    'max_iter': [100, 200, 300]\n",
+    "}\n",
+    "# Initialize GridSearchCV\n",
+    "grid_search_lr = GridSearchCV(LogisticRegression(), param_grid_lr, cv=5, scoring='accuracy')\n",
+    "\n",
+    "# Fit the model\n",
+    "grid_search_lr.fit(X_train, y_train)\n",
+    "\n",
+    "# Get the best model\n",
+    "best_lr = grid_search_lr.best_estimator_\n",
+    "\n",
+    "# Predict on the test set\n",
+    "y_pred_lr = best_lr.predict(X_test)\n",
+    "\n",
+    "# Print classification report\n",
+    "print(\"Logistic Regression Classification Report:\")\n",
+    "print(classification_report(y_test, y_pred_lr))\n",
+    "\n",
+    "# Print accuracy\n",
+    "accuracy = accuracy_score(y_test, y_pred_lr)\n",
+    "print(f\"Accuracy of the Linear Regression Model: {accuracy:.4f}\")"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "### Linear Regression Accuracy: \n",
+    "The overall accuracy of the best Linear Regression model on the test set is 72.46%."
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {
+    "scrolled": true
+   },
+   "outputs": [],
+   "source": [
+    "# Hyperparameters for RandomForest\n",
+    "\n",
+    "param_grid_rf = {\n",
+    "    'n_estimators': [50, 100, 200],\n",
+    "    'max_depth': [None, 10, 20, 30],\n",
+    "    'min_samples_split': [2, 5, 10],\n",
+    "    'min_samples_leaf': [1, 2, 4],\n",
+    "    'bootstrap': [True, False]\n",
+    "}\n",
+    "\n",
+    "# Initialize GridSearchCV\n",
+    "grid_search_rf = GridSearchCV(RandomForestClassifier(), param_grid_rf, cv=5, scoring='accuracy')\n",
+    "\n",
+    "# Fit the model\n",
+    "grid_search_rf.fit(X_train, y_train)\n",
+    "\n",
+    "# Get the best model\n",
+    "best_rf = grid_search_rf.best_estimator_\n",
+    "    \n",
+    "# Predict on the test set\n",
+    "y_pred_rf = best_rf.predict(X_test)\n",
+    "\n",
+    "# Print classification report\n",
+    "print(\"Random Forest Classification Report:\")\n",
+    "print(classification_report(y_test, y_pred_rf))\n",
+    "\n",
+    "# Print accuracy\n",
+    "accuracy = accuracy_score(y_test, y_pred_rf)\n",
+    "print(f\"Accuracy: {accuracy:.4f}\")"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "### Random Forest Accuracy:\n",
+    "The overall accuracy of the best Random Forest model on the test set is 78.67%."
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "# Decision Tree: Sanity Check\n",
+    "\n",
+    "# Checking for Overfitting\n",
+    "\n",
+    "# Evaluate the best model on the training set\n",
+    "accuracy_train_dt = accuracy_score(y_train, best_dt_model.predict(X_train))\n",
+    "print(f\"Accuracy of the best Decision Tree model on the training set: {accuracy_train_dt:.2f}\")\n",
+    "\n",
+    "# Evaluate the best model on the test set\n",
+    "accuracy_test_dt = accuracy_score(y_test, y_pred_dt)\n",
+    "print(f\"Accuracy of the best Decision Tree model on the test set: {accuracy_test_dt:.2f}\")"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "# Linear Regression: Sanity Check\n",
+    "\n",
+    "# Checking for Overfitting\n",
+    "\n",
+    "accuracy_train_lr = accuracy_score(y_train, best_lr.predict(X_train))\n",
+    "accuracy_test_lr = accuracy_score(y_test, y_pred_lr)\n",
+    "print(f\"Accuracy of the Logistic Regression Model on the training set: {accuracy_train_lr:.4f}\")\n",
+    "print(f\"Accuracy of the Logistic Regression Model on the test set: {accuracy_test_lr:.4f}\")"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "# Random Forest: Sanity Check\n",
+    "\n",
+    "# Checking for Overfitting\n",
+    "\n",
+    "accuracy_train_rf = accuracy_score(y_train, best_rf.predict(X_train))\n",
+    "accuracy_test_rf = accuracy_score(y_test, y_pred_rf)\n",
+    "print(f\"Accuracy of the Random Forest Model on the training set: {accuracy_train_rf:.4f}\")\n",
+    "print(f\"Accuracy of the Random Forest Model on the test set: {accuracy_test_rf:.4f}\")"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "# Conclusion\n",
+    "\n",
+    "Random Forest had the highest accuracy at 78.67%, followed by Decision Tree at 77%, and Linear Regression at 72.46%.\n",
+    "\n",
+    "In comparison to the other models, Random Forest frequently gave higher precision and recall for both classes, particularly for class 1.\n",
+    "\n",
+    "When averaged across both classes, Random Forest obtained the highest F1-score, suggesting a better balance between recall and precision.\n",
+    "\n",
+    "As a result of the Random Forest Machine Learning model have an accuracy score close to 79%, this would implicate that the stakeholders can put their faith in this model and trust it's ability of obtaining better results for the organization.\n",
+    "\n",
+    "A risk of 21.34% remains valid until a solution have to be found such as improving highlight areas in the Model.\n",
+    "\n",
+    "Implementing this Machine Learning model (Random Forest) helps in reducing cost and increasing efficiency.\n",
+    "\n",
+    "Random Forest model will help Megaline management recommend their newer plans: Smart or Ultra."
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "<div class=\"alert alert-block alert-success\">✔️\n",
+    "    \n",
+    "\n",
+    "__Reviewer's comment №1__\n",
+    "\n",
+    "Here's the great thing: we picked the best hyperparameters for all our models (in this case, maximizing the accuracy_score metric). Here we also identified the MOST optimal model. On validation, it turned out to be the \"random forest\" model.\n",
+    "\n",
+    "After the hyperparameters are selected for validation, we test the models on the test data. Based on the results of testing on the test (sorry for the tautalogy), we choose a model that we can pass to production."
+   ]
+  }
+ ],
+ "metadata": {
+  "ExecuteTimeLog": [
+   {
+    "duration": 1190,
+    "start_time": "2024-06-03T21:14:37.272Z"
+   },
+   {
+    "duration": 1081,
+    "start_time": "2024-06-03T21:14:59.852Z"
+   },
+   {
+    "duration": 1163,
+    "start_time": "2024-06-03T21:15:17.489Z"
+   },
+   {
+    "duration": 1086,
+    "start_time": "2024-06-03T21:15:18.656Z"
+   },
+   {
+    "duration": 189,
+    "start_time": "2024-06-03T21:15:42.411Z"
+   },
+   {
+    "duration": 122,
+    "start_time": "2024-06-03T21:15:58.763Z"
+   },
+   {
+    "duration": 4,
+    "start_time": "2024-06-03T21:17:20.741Z"
+   },
+   {
+    "duration": 3,
+    "start_time": "2024-06-03T21:17:27.822Z"
+   },
+   {
+    "duration": 1160,
+    "start_time": "2024-06-03T21:17:34.233Z"
+   },
+   {
+    "duration": 3,
+    "start_time": "2024-06-03T21:17:35.396Z"
+   },
+   {
+    "duration": 1063,
+    "start_time": "2024-06-03T21:17:50.572Z"
+   },
+   {
+    "duration": 24,
+    "start_time": "2024-06-03T21:18:44.543Z"
+   },
+   {
+    "duration": 195,
+    "start_time": "2024-06-03T21:23:32.278Z"
+   },
+   {
+    "duration": 121,
+    "start_time": "2024-06-03T21:23:44.808Z"
+   },
+   {
+    "duration": 3,
+    "start_time": "2024-06-03T21:23:51.797Z"
+   },
+   {
+    "duration": 26,
+    "start_time": "2024-06-03T21:24:02.387Z"
+   },
+   {
+    "duration": 24,
+    "start_time": "2024-06-03T21:24:18.080Z"
+   },
+   {
+    "duration": 3,
+    "start_time": "2024-06-03T21:24:19.834Z"
+   },
+   {
+    "duration": 22,
+    "start_time": "2024-06-03T21:24:21.873Z"
+   },
+   {
+    "duration": 22,
+    "start_time": "2024-06-03T21:24:32.919Z"
+   },
+   {
+    "duration": 130,
+    "start_time": "2024-06-03T21:26:54.465Z"
+   },
+   {
+    "duration": 1305,
+    "start_time": "2024-06-03T21:27:00.649Z"
+   },
+   {
+    "duration": 1151,
+    "start_time": "2024-06-03T21:27:01.958Z"
+   },
+   {
+    "duration": 4,
+    "start_time": "2024-06-03T21:27:04.450Z"
+   },
+   {
+    "duration": 4,
+    "start_time": "2024-06-03T21:27:07.023Z"
+   },
+   {
+    "duration": 194,
+    "start_time": "2024-06-03T21:27:08.373Z"
+   },
+   {
+    "duration": 125,
+    "start_time": "2024-06-03T21:27:38.524Z"
+   },
+   {
+    "duration": 131,
+    "start_time": "2024-06-03T21:27:45.407Z"
+   },
+   {
+    "duration": 306,
+    "start_time": "2024-06-04T13:43:48.143Z"
+   },
+   {
+    "duration": 1108,
+    "start_time": "2024-06-04T13:44:02.663Z"
+   },
+   {
+    "duration": 771,
+    "start_time": "2024-06-04T13:44:04.261Z"
+   },
+   {
+    "duration": 199,
+    "start_time": "2024-06-04T13:46:04.619Z"
+   },
+   {
+    "duration": 4,
+    "start_time": "2024-06-04T13:46:40.028Z"
+   },
+   {
+    "duration": 125,
+    "start_time": "2024-06-04T13:46:42.501Z"
+   },
+   {
+    "duration": 122,
+    "start_time": "2024-06-04T13:52:03.840Z"
+   },
+   {
+    "duration": 119,
+    "start_time": "2024-06-04T13:52:14.689Z"
+   },
+   {
+    "duration": 3,
+    "start_time": "2024-06-04T13:53:11.851Z"
+   },
+   {
+    "duration": 126,
+    "start_time": "2024-06-04T13:53:13.086Z"
+   },
+   {
+    "duration": 5,
+    "start_time": "2024-06-04T13:53:32.486Z"
+   },
+   {
+    "duration": 121,
+    "start_time": "2024-06-04T13:53:40.836Z"
+   },
+   {
+    "duration": 338,
+    "start_time": "2024-06-05T16:11:23.306Z"
+   },
+   {
+    "duration": 571,
+    "start_time": "2024-06-05T16:11:30.918Z"
+   },
+   {
+    "duration": 1349,
+    "start_time": "2024-06-05T16:11:31.494Z"
+   },
+   {
+    "duration": 22,
+    "start_time": "2024-06-05T16:11:48.809Z"
+   },
+   {
+    "duration": 24,
+    "start_time": "2024-06-05T16:12:01.611Z"
+   },
+   {
+    "duration": 166,
+    "start_time": "2024-06-05T16:13:42.477Z"
+   },
+   {
+    "duration": 8,
+    "start_time": "2024-06-05T16:13:52.851Z"
+   },
+   {
+    "duration": 4,
+    "start_time": "2024-06-05T16:14:23.938Z"
+   },
+   {
+    "duration": 5,
+    "start_time": "2024-06-05T16:14:48.238Z"
+   },
+   {
+    "duration": 1530,
+    "start_time": "2024-06-06T02:55:52.353Z"
+   },
+   {
+    "duration": 425,
+    "start_time": "2024-06-06T02:56:58.670Z"
+   },
+   {
+    "duration": 1081,
+    "start_time": "2024-06-06T02:56:59.099Z"
+   },
+   {
+    "duration": 14,
+    "start_time": "2024-06-06T02:58:16.412Z"
+   },
+   {
+    "duration": 19,
+    "start_time": "2024-06-06T02:58:27.122Z"
+   },
+   {
+    "duration": 16,
+    "start_time": "2024-06-06T02:59:02.241Z"
+   },
+   {
+    "duration": 7,
+    "start_time": "2024-06-06T02:59:13.249Z"
+   },
+   {
+    "duration": 35,
+    "start_time": "2024-06-06T02:59:23.239Z"
+   },
+   {
+    "duration": 22,
+    "start_time": "2024-06-06T02:59:53.281Z"
+   },
+   {
+    "duration": 4821,
+    "start_time": "2024-06-06T03:00:10.832Z"
+   },
+   {
+    "duration": 5,
+    "start_time": "2024-06-06T03:00:15.657Z"
+   },
+   {
+    "duration": 3,
+    "start_time": "2024-06-06T03:00:50.411Z"
+   },
+   {
+    "duration": 128,
+    "start_time": "2024-06-06T03:00:56.948Z"
+   },
+   {
+    "duration": 1710,
+    "start_time": "2024-06-06T03:01:11.497Z"
+   },
+   {
+    "duration": 20,
+    "start_time": "2024-06-06T03:01:13.211Z"
+   },
+   {
+    "duration": 16,
+    "start_time": "2024-06-06T03:01:13.234Z"
+   },
+   {
+    "duration": 9,
+    "start_time": "2024-06-06T03:01:13.252Z"
+   },
+   {
+    "duration": 66,
+    "start_time": "2024-06-06T03:01:13.265Z"
+   },
+   {
+    "duration": 5,
+    "start_time": "2024-06-06T03:01:13.334Z"
+   },
+   {
+    "duration": 4,
+    "start_time": "2024-06-06T03:01:13.342Z"
+   },
+   {
+    "duration": 462,
+    "start_time": "2024-06-06T03:01:13.349Z"
+   },
+   {
+    "duration": 23,
+    "start_time": "2024-06-06T03:01:20.922Z"
+   },
+   {
+    "duration": 25,
+    "start_time": "2024-06-06T03:01:32.252Z"
+   },
+   {
+    "duration": 28,
+    "start_time": "2024-06-06T03:01:53.903Z"
+   },
+   {
+    "duration": 27,
+    "start_time": "2024-06-06T03:02:16.493Z"
+   },
+   {
+    "duration": 24,
+    "start_time": "2024-06-06T03:02:19.296Z"
+   },
+   {
+    "duration": 23,
+    "start_time": "2024-06-06T03:02:27.546Z"
+   },
+   {
+    "duration": 1648,
+    "start_time": "2024-06-06T03:02:33.166Z"
+   },
+   {
+    "duration": 15,
+    "start_time": "2024-06-06T03:02:34.818Z"
+   },
+   {
+    "duration": 15,
+    "start_time": "2024-06-06T03:02:34.839Z"
+   },
+   {
+    "duration": 9,
+    "start_time": "2024-06-06T03:02:34.856Z"
+   },
+   {
+    "duration": 72,
+    "start_time": "2024-06-06T03:02:34.871Z"
+   },
+   {
+    "duration": 5,
+    "start_time": "2024-06-06T03:02:34.945Z"
+   },
+   {
+    "duration": 470,
+    "start_time": "2024-06-06T03:02:34.953Z"
+   },
+   {
+    "duration": 24,
+    "start_time": "2024-06-06T03:02:39.148Z"
+   },
+   {
+    "duration": 24,
+    "start_time": "2024-06-06T03:03:06.526Z"
+   },
+   {
+    "duration": 1683,
+    "start_time": "2024-06-06T03:03:15.637Z"
+   },
+   {
+    "duration": 9,
+    "start_time": "2024-06-06T03:03:17.331Z"
+   },
+   {
+    "duration": 15,
+    "start_time": "2024-06-06T03:03:17.343Z"
+   },
+   {
+    "duration": 9,
+    "start_time": "2024-06-06T03:03:17.361Z"
+   },
+   {
+    "duration": 4,
+    "start_time": "2024-06-06T03:03:17.374Z"
+   },
+   {
+    "duration": 70,
+    "start_time": "2024-06-06T03:03:17.382Z"
+   },
+   {
+    "duration": 3,
+    "start_time": "2024-06-06T03:03:17.456Z"
+   },
+   {
+    "duration": 469,
+    "start_time": "2024-06-06T03:03:17.463Z"
+   },
+   {
+    "duration": 1683,
+    "start_time": "2024-06-06T03:03:26.502Z"
+   },
+   {
+    "duration": 12,
+    "start_time": "2024-06-06T03:03:28.188Z"
+   },
+   {
+    "duration": 35,
+    "start_time": "2024-06-06T03:03:28.205Z"
+   },
+   {
+    "duration": 8,
+    "start_time": "2024-06-06T03:03:28.244Z"
+   },
+   {
+    "duration": 4,
+    "start_time": "2024-06-06T03:03:28.256Z"
+   },
+   {
+    "duration": 32,
+    "start_time": "2024-06-06T03:03:28.263Z"
+   },
+   {
+    "duration": 4,
+    "start_time": "2024-06-06T03:03:28.330Z"
+   },
+   {
+    "duration": 469,
+    "start_time": "2024-06-06T03:03:28.338Z"
+   },
+   {
+    "duration": 22,
+    "start_time": "2024-06-06T03:04:54.714Z"
+   },
+   {
+    "duration": 22,
+    "start_time": "2024-06-06T03:05:47.800Z"
+   },
+   {
+    "duration": 27,
+    "start_time": "2024-06-06T03:06:10.606Z"
+   },
+   {
+    "duration": 1657,
+    "start_time": "2024-06-06T03:06:40.459Z"
+   },
+   {
+    "duration": 17,
+    "start_time": "2024-06-06T03:06:42.120Z"
+   },
+   {
+    "duration": 15,
+    "start_time": "2024-06-06T03:06:42.141Z"
+   },
+   {
+    "duration": 8,
+    "start_time": "2024-06-06T03:06:42.160Z"
+   },
+   {
+    "duration": 4,
+    "start_time": "2024-06-06T03:06:42.172Z"
+   },
+   {
+    "duration": 73,
+    "start_time": "2024-06-06T03:06:42.180Z"
+   },
+   {
+    "duration": 3,
+    "start_time": "2024-06-06T03:06:42.256Z"
+   },
+   {
+    "duration": 492,
+    "start_time": "2024-06-06T03:06:42.262Z"
+   },
+   {
+    "duration": 23,
+    "start_time": "2024-06-06T03:07:12.143Z"
+   },
+   {
+    "duration": 1686,
+    "start_time": "2024-06-06T03:07:22.579Z"
+   },
+   {
+    "duration": 11,
+    "start_time": "2024-06-06T03:07:24.268Z"
+   },
+   {
+    "duration": 20,
+    "start_time": "2024-06-06T03:07:24.282Z"
+   },
+   {
+    "duration": 30,
+    "start_time": "2024-06-06T03:07:24.307Z"
+   },
+   {
+    "duration": 7,
+    "start_time": "2024-06-06T03:07:24.340Z"
+   },
+   {
+    "duration": 38,
+    "start_time": "2024-06-06T03:07:24.351Z"
+   },
+   {
+    "duration": 6,
+    "start_time": "2024-06-06T03:07:24.392Z"
+   },
+   {
+    "duration": 473,
+    "start_time": "2024-06-06T03:07:30.466Z"
+   },
+   {
+    "duration": 27,
+    "start_time": "2024-06-06T03:07:53.770Z"
+   },
+   {
+    "duration": 25,
+    "start_time": "2024-06-06T03:08:10.443Z"
+   },
+   {
+    "duration": 27,
+    "start_time": "2024-06-06T03:08:12.374Z"
+   },
+   {
+    "duration": 24,
+    "start_time": "2024-06-06T03:08:21.103Z"
+   },
+   {
+    "duration": 1611,
+    "start_time": "2024-06-06T03:08:28.077Z"
+   },
+   {
+    "duration": 11,
+    "start_time": "2024-06-06T03:08:29.691Z"
+   },
+   {
+    "duration": 35,
+    "start_time": "2024-06-06T03:08:29.704Z"
+   },
+   {
+    "duration": 10,
+    "start_time": "2024-06-06T03:08:29.741Z"
+   },
+   {
+    "duration": 4,
+    "start_time": "2024-06-06T03:08:29.755Z"
+   },
+   {
+    "duration": 30,
+    "start_time": "2024-06-06T03:08:29.762Z"
+   },
+   {
+    "duration": 4,
+    "start_time": "2024-06-06T03:08:29.830Z"
+   },
+   {
+    "duration": 464,
+    "start_time": "2024-06-06T03:08:29.838Z"
+   },
+   {
+    "duration": 24,
+    "start_time": "2024-06-06T03:08:41.259Z"
+   },
+   {
+    "duration": 249,
+    "start_time": "2024-06-06T03:10:04.676Z"
+   },
+   {
+    "duration": 1920,
+    "start_time": "2024-06-06T03:10:09.770Z"
+   },
+   {
+    "duration": 10,
+    "start_time": "2024-06-06T03:10:11.693Z"
+   },
+   {
+    "duration": 31,
+    "start_time": "2024-06-06T03:10:11.707Z"
+   },
+   {
+    "duration": 8,
+    "start_time": "2024-06-06T03:10:11.743Z"
+   },
+   {
+    "duration": 5,
+    "start_time": "2024-06-06T03:10:11.755Z"
+   },
+   {
+    "duration": 69,
+    "start_time": "2024-06-06T03:10:11.763Z"
+   },
+   {
+    "duration": 3,
+    "start_time": "2024-06-06T03:10:11.836Z"
+   },
+   {
+    "duration": 470,
+    "start_time": "2024-06-06T03:10:18.828Z"
+   },
+   {
+    "duration": 23,
+    "start_time": "2024-06-06T03:18:43.322Z"
+   },
+   {
+    "duration": 24,
+    "start_time": "2024-06-06T03:18:57.425Z"
+   },
+   {
+    "duration": 24,
+    "start_time": "2024-06-06T03:19:07.625Z"
+   },
+   {
+    "duration": 1910,
+    "start_time": "2024-06-06T03:19:13.835Z"
+   },
+   {
+    "duration": 11,
+    "start_time": "2024-06-06T03:19:15.748Z"
+   },
+   {
+    "duration": 15,
+    "start_time": "2024-06-06T03:19:15.762Z"
+   },
+   {
+    "duration": 7,
+    "start_time": "2024-06-06T03:19:15.782Z"
+   },
+   {
+    "duration": 39,
+    "start_time": "2024-06-06T03:19:15.793Z"
+   },
+   {
+    "duration": 32,
+    "start_time": "2024-06-06T03:19:15.835Z"
+   },
+   {
+    "duration": 4,
+    "start_time": "2024-06-06T03:19:15.871Z"
+   },
+   {
+    "duration": 509,
+    "start_time": "2024-06-06T03:19:15.879Z"
+   },
+   {
+    "duration": 127,
+    "start_time": "2024-06-06T03:20:03.947Z"
+   },
+   {
+    "duration": 990,
+    "start_time": "2024-06-06T03:20:09.262Z"
+   },
+   {
+    "duration": 442,
+    "start_time": "2024-06-06T03:20:10.256Z"
+   },
+   {
+    "duration": 0,
+    "start_time": "2024-06-06T03:20:10.701Z"
+   },
+   {
+    "duration": 0,
+    "start_time": "2024-06-06T03:20:10.702Z"
+   },
+   {
+    "duration": 0,
+    "start_time": "2024-06-06T03:20:10.704Z"
+   },
+   {
+    "duration": 0,
+    "start_time": "2024-06-06T03:20:10.706Z"
+   },
+   {
+    "duration": 0,
+    "start_time": "2024-06-06T03:20:10.709Z"
+   },
+   {
+    "duration": 23,
+    "start_time": "2024-06-06T03:20:38.336Z"
+   },
+   {
+    "duration": 24,
+    "start_time": "2024-06-06T03:20:40.326Z"
+   },
+   {
+    "duration": 914,
+    "start_time": "2024-06-06T03:20:44.116Z"
+   },
+   {
+    "duration": 2015,
+    "start_time": "2024-06-06T03:20:50.113Z"
+   },
+   {
+    "duration": 20,
+    "start_time": "2024-06-06T03:20:52.131Z"
+   },
+   {
+    "duration": 17,
+    "start_time": "2024-06-06T03:20:52.154Z"
+   },
+   {
+    "duration": 10,
+    "start_time": "2024-06-06T03:20:52.177Z"
+   },
+   {
+    "duration": 6,
+    "start_time": "2024-06-06T03:20:52.191Z"
+   },
+   {
+    "duration": 75,
+    "start_time": "2024-06-06T03:20:52.200Z"
+   },
+   {
+    "duration": 5,
+    "start_time": "2024-06-06T03:20:52.278Z"
+   },
+   {
+    "duration": 472,
+    "start_time": "2024-06-06T03:21:02.639Z"
+   },
+   {
+    "duration": 5,
+    "start_time": "2024-06-06T03:22:26.988Z"
+   },
+   {
+    "duration": 10,
+    "start_time": "2024-06-06T03:22:28.590Z"
+   },
+   {
+    "duration": 36,
+    "start_time": "2024-06-06T03:23:23.737Z"
+   },
+   {
+    "duration": 1452,
+    "start_time": "2024-06-06T03:23:31.736Z"
+   },
+   {
+    "duration": 28,
+    "start_time": "2024-06-06T03:24:01.359Z"
+   },
+   {
+    "duration": 25,
+    "start_time": "2024-06-06T03:26:08.874Z"
+   },
+   {
+    "duration": 4,
+    "start_time": "2024-06-06T03:26:13.525Z"
+   },
+   {
+    "duration": 7,
+    "start_time": "2024-06-06T03:26:34.164Z"
+   },
+   {
+    "duration": 27,
+    "start_time": "2024-06-06T03:27:04.632Z"
+   },
+   {
+    "duration": 5,
+    "start_time": "2024-06-06T03:27:16.601Z"
+   },
+   {
+    "duration": 26,
+    "start_time": "2024-06-06T03:27:18.889Z"
+   },
+   {
+    "duration": 1235,
+    "start_time": "2024-06-06T03:27:23.546Z"
+   },
+   {
+    "duration": 12,
+    "start_time": "2024-06-06T03:27:24.784Z"
+   },
+   {
+    "duration": 50,
+    "start_time": "2024-06-06T03:27:24.799Z"
+   },
+   {
+    "duration": 6,
+    "start_time": "2024-06-06T03:27:24.855Z"
+   },
+   {
+    "duration": 8,
+    "start_time": "2024-06-06T03:27:24.864Z"
+   },
+   {
+    "duration": 455,
+    "start_time": "2024-06-06T03:27:24.875Z"
+   },
+   {
+    "duration": 12,
+    "start_time": "2024-06-06T03:27:34.164Z"
+   },
+   {
+    "duration": 5,
+    "start_time": "2024-06-06T03:27:56.698Z"
+   },
+   {
+    "duration": 6,
+    "start_time": "2024-06-06T03:28:13.116Z"
+   },
+   {
+    "duration": 6,
+    "start_time": "2024-06-06T03:28:29.151Z"
+   },
+   {
+    "duration": 7,
+    "start_time": "2024-06-06T03:32:02.318Z"
+   },
+   {
+    "duration": 8,
+    "start_time": "2024-06-06T03:32:45.982Z"
+   },
+   {
+    "duration": 6,
+    "start_time": "2024-06-06T03:32:56.202Z"
+   },
+   {
+    "duration": 5,
+    "start_time": "2024-06-06T03:34:08.970Z"
+   },
+   {
+    "duration": 33,
+    "start_time": "2024-06-06T03:44:32.872Z"
+   },
+   {
+    "duration": 1458,
+    "start_time": "2024-06-06T03:44:45.630Z"
+   },
+   {
+    "duration": 15,
+    "start_time": "2024-06-06T03:44:47.093Z"
+   },
+   {
+    "duration": 60,
+    "start_time": "2024-06-06T03:44:47.111Z"
+   },
+   {
+    "duration": 4,
+    "start_time": "2024-06-06T03:44:47.174Z"
+   },
+   {
+    "duration": 7,
+    "start_time": "2024-06-06T03:44:47.184Z"
+   },
+   {
+    "duration": 41,
+    "start_time": "2024-06-06T03:44:47.194Z"
+   },
+   {
+    "duration": 6,
+    "start_time": "2024-06-06T03:44:47.239Z"
+   },
+   {
+    "duration": 8,
+    "start_time": "2024-06-06T03:44:47.249Z"
+   },
+   {
+    "duration": 7,
+    "start_time": "2024-06-06T03:44:47.260Z"
+   },
+   {
+    "duration": 6,
+    "start_time": "2024-06-06T03:44:47.270Z"
+   },
+   {
+    "duration": 6,
+    "start_time": "2024-06-06T03:47:42.992Z"
+   },
+   {
+    "duration": 578,
+    "start_time": "2024-06-06T03:48:06.579Z"
+   },
+   {
+    "duration": 34,
+    "start_time": "2024-06-06T03:48:30.500Z"
+   },
+   {
+    "duration": 1179,
+    "start_time": "2024-06-06T13:56:20.056Z"
+   },
+   {
+    "duration": 23,
+    "start_time": "2024-06-06T13:56:21.239Z"
+   },
+   {
+    "duration": 34,
+    "start_time": "2024-06-06T13:56:21.265Z"
+   },
+   {
+    "duration": 4,
+    "start_time": "2024-06-06T13:56:21.302Z"
+   },
+   {
+    "duration": 5,
+    "start_time": "2024-06-06T13:56:21.330Z"
+   },
+   {
+    "duration": 12,
+    "start_time": "2024-06-06T13:56:21.339Z"
+   },
+   {
+    "duration": 4,
+    "start_time": "2024-06-06T13:56:21.354Z"
+   },
+   {
+    "duration": 7,
+    "start_time": "2024-06-06T13:56:21.362Z"
+   },
+   {
+    "duration": 6,
+    "start_time": "2024-06-06T13:56:21.372Z"
+   },
+   {
+    "duration": 50,
+    "start_time": "2024-06-06T13:56:21.381Z"
+   },
+   {
+    "duration": 443,
+    "start_time": "2024-06-06T13:56:21.435Z"
+   },
+   {
+    "duration": 329,
+    "start_time": "2024-06-06T15:23:05.963Z"
+   },
+   {
+    "duration": 327,
+    "start_time": "2024-06-06T23:56:58.306Z"
+   },
+   {
+    "duration": 1245,
+    "start_time": "2024-06-06T23:57:27.301Z"
+   },
+   {
+    "duration": 1281,
+    "start_time": "2024-06-06T23:57:31.812Z"
+   },
+   {
+    "duration": 19,
+    "start_time": "2024-06-06T23:57:33.098Z"
+   },
+   {
+    "duration": 44,
+    "start_time": "2024-06-06T23:57:33.120Z"
+   },
+   {
+    "duration": 4,
+    "start_time": "2024-06-06T23:57:33.169Z"
+   },
+   {
+    "duration": 7,
+    "start_time": "2024-06-06T23:57:33.176Z"
+   },
+   {
+    "duration": 13,
+    "start_time": "2024-06-06T23:57:33.186Z"
+   },
+   {
+    "duration": 29,
+    "start_time": "2024-06-06T23:57:33.202Z"
+   },
+   {
+    "duration": 8,
+    "start_time": "2024-06-06T23:57:33.236Z"
+   },
+   {
+    "duration": 8,
+    "start_time": "2024-06-06T23:57:33.248Z"
+   },
+   {
+    "duration": 839,
+    "start_time": "2024-06-06T23:57:33.261Z"
+   },
+   {
+    "duration": 0,
+    "start_time": "2024-06-06T23:57:34.103Z"
+   },
+   {
+    "duration": 29,
+    "start_time": "2024-06-06T23:59:10.208Z"
+   },
+   {
+    "duration": 28,
+    "start_time": "2024-06-06T23:59:50.642Z"
+   },
+   {
+    "duration": 1178,
+    "start_time": "2024-06-07T00:01:16.022Z"
+   },
+   {
+    "duration": 11,
+    "start_time": "2024-06-07T00:01:17.203Z"
+   },
+   {
+    "duration": 36,
+    "start_time": "2024-06-07T00:01:17.230Z"
+   },
+   {
+    "duration": 5,
+    "start_time": "2024-06-07T00:01:17.271Z"
+   },
+   {
+    "duration": 431,
+    "start_time": "2024-06-07T00:01:17.279Z"
+   },
+   {
+    "duration": 0,
+    "start_time": "2024-06-07T00:01:17.713Z"
+   },
+   {
+    "duration": 0,
+    "start_time": "2024-06-07T00:01:17.716Z"
+   },
+   {
+    "duration": 0,
+    "start_time": "2024-06-07T00:01:17.718Z"
+   },
+   {
+    "duration": 0,
+    "start_time": "2024-06-07T00:01:17.731Z"
+   },
+   {
+    "duration": 0,
+    "start_time": "2024-06-07T00:01:17.732Z"
+   },
+   {
+    "duration": 0,
+    "start_time": "2024-06-07T00:01:17.734Z"
+   },
+   {
+    "duration": 0,
+    "start_time": "2024-06-07T00:01:17.736Z"
+   },
+   {
+    "duration": 28,
+    "start_time": "2024-06-07T00:01:44.745Z"
+   },
+   {
+    "duration": 36,
+    "start_time": "2024-06-07T00:03:07.503Z"
+   },
+   {
+    "duration": 35,
+    "start_time": "2024-06-07T00:03:49.387Z"
+   },
+   {
+    "duration": 1864,
+    "start_time": "2024-06-07T00:04:05.119Z"
+   },
+   {
+    "duration": 1179,
+    "start_time": "2024-06-07T00:04:15.796Z"
+   },
+   {
+    "duration": 12,
+    "start_time": "2024-06-07T00:04:16.978Z"
+   },
+   {
+    "duration": 49,
+    "start_time": "2024-06-07T00:04:16.992Z"
+   },
+   {
+    "duration": 4,
+    "start_time": "2024-06-07T00:04:17.044Z"
+   },
+   {
+    "duration": 6,
+    "start_time": "2024-06-07T00:04:17.054Z"
+   },
+   {
+    "duration": 13,
+    "start_time": "2024-06-07T00:04:17.065Z"
+   },
+   {
+    "duration": 5,
+    "start_time": "2024-06-07T00:04:17.081Z"
+   },
+   {
+    "duration": 45,
+    "start_time": "2024-06-07T00:04:17.089Z"
+   },
+   {
+    "duration": 6,
+    "start_time": "2024-06-07T00:04:17.138Z"
+   },
+   {
+    "duration": 798,
+    "start_time": "2024-06-07T00:04:17.148Z"
+   },
+   {
+    "duration": 0,
+    "start_time": "2024-06-07T00:04:17.949Z"
+   },
+   {
+    "duration": 40,
+    "start_time": "2024-06-07T00:06:11.039Z"
+   },
+   {
+    "duration": 121,
+    "start_time": "2024-06-07T00:06:21.763Z"
+   },
+   {
+    "duration": 44,
+    "start_time": "2024-06-07T00:08:06.779Z"
+   },
+   {
+    "duration": 147,
+    "start_time": "2024-06-07T00:08:25.479Z"
+   },
+   {
+    "duration": 134,
+    "start_time": "2024-06-07T00:10:28.096Z"
+   },
+   {
+    "duration": 130,
+    "start_time": "2024-06-07T00:13:08.842Z"
+   },
+   {
+    "duration": 1166,
+    "start_time": "2024-06-07T00:14:30.581Z"
+   },
+   {
+    "duration": 16,
+    "start_time": "2024-06-07T00:14:31.751Z"
+   },
+   {
+    "duration": 47,
+    "start_time": "2024-06-07T00:14:31.769Z"
+   },
+   {
+    "duration": 4,
+    "start_time": "2024-06-07T00:14:31.834Z"
+   },
+   {
+    "duration": 444,
+    "start_time": "2024-06-07T00:14:31.845Z"
+   },
+   {
+    "duration": 0,
+    "start_time": "2024-06-07T00:14:32.292Z"
+   },
+   {
+    "duration": 0,
+    "start_time": "2024-06-07T00:14:32.294Z"
+   },
+   {
+    "duration": 0,
+    "start_time": "2024-06-07T00:14:32.298Z"
+   },
+   {
+    "duration": 0,
+    "start_time": "2024-06-07T00:14:32.302Z"
+   },
+   {
+    "duration": 0,
+    "start_time": "2024-06-07T00:14:32.304Z"
+   },
+   {
+    "duration": 0,
+    "start_time": "2024-06-07T00:14:32.307Z"
+   },
+   {
+    "duration": 0,
+    "start_time": "2024-06-07T00:14:32.309Z"
+   },
+   {
+    "duration": 1179,
+    "start_time": "2024-06-07T00:14:58.396Z"
+   },
+   {
+    "duration": 11,
+    "start_time": "2024-06-07T00:14:59.580Z"
+   },
+   {
+    "duration": 55,
+    "start_time": "2024-06-07T00:14:59.594Z"
+   },
+   {
+    "duration": 5,
+    "start_time": "2024-06-07T00:14:59.652Z"
+   },
+   {
+    "duration": 6,
+    "start_time": "2024-06-07T00:14:59.662Z"
+   },
+   {
+    "duration": 13,
+    "start_time": "2024-06-07T00:14:59.671Z"
+   },
+   {
+    "duration": 4,
+    "start_time": "2024-06-07T00:14:59.690Z"
+   },
+   {
+    "duration": 8,
+    "start_time": "2024-06-07T00:14:59.731Z"
+   },
+   {
+    "duration": 7,
+    "start_time": "2024-06-07T00:14:59.741Z"
+   },
+   {
+    "duration": 468,
+    "start_time": "2024-06-07T00:14:59.750Z"
+   },
+   {
+    "duration": 0,
+    "start_time": "2024-06-07T00:15:00.230Z"
+   },
+   {
+    "duration": 0,
+    "start_time": "2024-06-07T00:15:00.232Z"
+   },
+   {
+    "duration": 1232,
+    "start_time": "2024-06-07T00:15:15.733Z"
+   },
+   {
+    "duration": 12,
+    "start_time": "2024-06-07T00:15:16.969Z"
+   },
+   {
+    "duration": 48,
+    "start_time": "2024-06-07T00:15:16.984Z"
+   },
+   {
+    "duration": 4,
+    "start_time": "2024-06-07T00:15:17.037Z"
+   },
+   {
+    "duration": 7,
+    "start_time": "2024-06-07T00:15:17.043Z"
+   },
+   {
+    "duration": 13,
+    "start_time": "2024-06-07T00:15:17.053Z"
+   },
+   {
+    "duration": 9,
+    "start_time": "2024-06-07T00:15:17.069Z"
+   },
+   {
+    "duration": 50,
+    "start_time": "2024-06-07T00:15:17.081Z"
+   },
+   {
+    "duration": 7,
+    "start_time": "2024-06-07T00:15:17.134Z"
+   },
+   {
+    "duration": 13,
+    "start_time": "2024-06-07T00:15:17.145Z"
+   },
+   {
+    "duration": 830,
+    "start_time": "2024-06-07T00:15:17.161Z"
+   },
+   {
+    "duration": 0,
+    "start_time": "2024-06-07T00:15:17.994Z"
+   },
+   {
+    "duration": 1203,
+    "start_time": "2024-06-07T00:47:27.476Z"
+   },
+   {
+    "duration": 19,
+    "start_time": "2024-06-07T00:47:28.683Z"
+   },
+   {
+    "duration": 38,
+    "start_time": "2024-06-07T00:47:28.707Z"
+   },
+   {
+    "duration": 4,
+    "start_time": "2024-06-07T00:47:28.749Z"
+   },
+   {
+    "duration": 8,
+    "start_time": "2024-06-07T00:47:28.760Z"
+   },
+   {
+    "duration": 13,
+    "start_time": "2024-06-07T00:47:28.771Z"
+   },
+   {
+    "duration": 459,
+    "start_time": "2024-06-07T00:47:28.787Z"
+   },
+   {
+    "duration": 0,
+    "start_time": "2024-06-07T00:47:29.248Z"
+   },
+   {
+    "duration": 0,
+    "start_time": "2024-06-07T00:47:29.250Z"
+   },
+   {
+    "duration": 45,
+    "start_time": "2024-06-07T00:47:44.706Z"
+   },
+   {
+    "duration": 38,
+    "start_time": "2024-06-07T00:48:09.355Z"
+   },
+   {
+    "duration": 46,
+    "start_time": "2024-06-07T00:48:53.379Z"
+   },
+   {
+    "duration": 62,
+    "start_time": "2024-06-07T00:49:08.387Z"
+   },
+   {
+    "duration": 1335,
+    "start_time": "2024-06-07T00:49:16.786Z"
+   },
+   {
+    "duration": 22,
+    "start_time": "2024-06-07T00:49:18.125Z"
+   },
+   {
+    "duration": 41,
+    "start_time": "2024-06-07T00:49:18.156Z"
+   },
+   {
+    "duration": 6,
+    "start_time": "2024-06-07T00:49:18.207Z"
+   },
+   {
+    "duration": 13,
+    "start_time": "2024-06-07T00:49:18.216Z"
+   },
+   {
+    "duration": 13,
+    "start_time": "2024-06-07T00:49:18.232Z"
+   },
+   {
+    "duration": 594,
+    "start_time": "2024-06-07T00:49:18.248Z"
+   },
+   {
+    "duration": 0,
+    "start_time": "2024-06-07T00:49:18.846Z"
+   },
+   {
+    "duration": 56,
+    "start_time": "2024-06-07T00:49:43.851Z"
+   },
+   {
+    "duration": 661,
+    "start_time": "2024-06-07T00:50:08.517Z"
+   },
+   {
+    "duration": 1214,
+    "start_time": "2024-06-07T02:12:32.638Z"
+   },
+   {
+    "duration": 18,
+    "start_time": "2024-06-07T02:12:33.856Z"
+   },
+   {
+    "duration": 45,
+    "start_time": "2024-06-07T02:12:33.877Z"
+   },
+   {
+    "duration": 5,
+    "start_time": "2024-06-07T02:12:33.926Z"
+   },
+   {
+    "duration": 7,
+    "start_time": "2024-06-07T02:12:33.934Z"
+   },
+   {
+    "duration": 14,
+    "start_time": "2024-06-07T02:12:33.944Z"
+   },
+   {
+    "duration": 850,
+    "start_time": "2024-06-07T02:12:33.961Z"
+   },
+   {
+    "duration": 0,
+    "start_time": "2024-06-07T02:12:34.814Z"
+   },
+   {
+    "duration": 1196,
+    "start_time": "2024-06-07T02:12:46.647Z"
+   },
+   {
+    "duration": 12,
+    "start_time": "2024-06-07T02:12:47.846Z"
+   },
+   {
+    "duration": 58,
+    "start_time": "2024-06-07T02:12:47.861Z"
+   },
+   {
+    "duration": 4,
+    "start_time": "2024-06-07T02:12:47.924Z"
+   },
+   {
+    "duration": 7,
+    "start_time": "2024-06-07T02:12:47.931Z"
+   },
+   {
+    "duration": 12,
+    "start_time": "2024-06-07T02:12:47.942Z"
+   },
+   {
+    "duration": 851,
+    "start_time": "2024-06-07T02:12:47.959Z"
+   },
+   {
+    "duration": 0,
+    "start_time": "2024-06-07T02:12:48.813Z"
+   },
+   {
+    "duration": 305,
+    "start_time": "2024-06-07T02:13:50.020Z"
+   },
+   {
+    "duration": 1173,
+    "start_time": "2024-06-07T02:14:03.269Z"
+   },
+   {
+    "duration": 11,
+    "start_time": "2024-06-07T02:14:29.273Z"
+   },
+   {
+    "duration": 35,
+    "start_time": "2024-06-07T02:14:32.077Z"
+   },
+   {
+    "duration": 14,
+    "start_time": "2024-06-07T02:14:46.383Z"
+   },
+   {
+    "duration": 117,
+    "start_time": "2024-06-07T02:15:38.843Z"
+   },
+   {
+    "duration": 20,
+    "start_time": "2024-06-07T02:15:42.456Z"
+   },
+   {
+    "duration": 8,
+    "start_time": "2024-06-07T02:15:49.739Z"
+   },
+   {
+    "duration": 5,
+    "start_time": "2024-06-07T02:16:19.676Z"
+   },
+   {
+    "duration": 6,
+    "start_time": "2024-06-07T02:18:27.180Z"
+   },
+   {
+    "duration": 10,
+    "start_time": "2024-06-07T02:18:29.704Z"
+   },
+   {
+    "duration": 12,
+    "start_time": "2024-06-07T02:18:32.012Z"
+   },
+   {
+    "duration": 14,
+    "start_time": "2024-06-07T02:19:49.103Z"
+   },
+   {
+    "duration": 36,
+    "start_time": "2024-06-07T02:22:34.477Z"
+   },
+   {
+    "duration": 10,
+    "start_time": "2024-06-07T02:23:27.725Z"
+   },
+   {
+    "duration": 5,
+    "start_time": "2024-06-07T02:28:05.623Z"
+   },
+   {
+    "duration": 357,
+    "start_time": "2024-06-07T02:30:18.823Z"
+   },
+   {
+    "duration": 1240,
+    "start_time": "2024-06-07T02:39:01.997Z"
+   },
+   {
+    "duration": 12,
+    "start_time": "2024-06-07T02:39:03.738Z"
+   },
+   {
+    "duration": 37,
+    "start_time": "2024-06-07T02:39:04.939Z"
+   },
+   {
+    "duration": 12,
+    "start_time": "2024-06-07T02:39:06.818Z"
+   },
+   {
+    "duration": 9,
+    "start_time": "2024-06-07T02:39:08.553Z"
+   },
+   {
+    "duration": 5,
+    "start_time": "2024-06-07T02:39:09.541Z"
+   },
+   {
+    "duration": 13,
+    "start_time": "2024-06-07T02:39:11.971Z"
+   },
+   {
+    "duration": 18,
+    "start_time": "2024-06-07T02:39:13.747Z"
+   },
+   {
+    "duration": 13,
+    "start_time": "2024-06-07T02:39:18.735Z"
+   },
+   {
+    "duration": 23,
+    "start_time": "2024-06-07T02:40:33.624Z"
+   },
+   {
+    "duration": 424,
+    "start_time": "2024-06-07T02:41:53.397Z"
+   },
+   {
+    "duration": 1226,
+    "start_time": "2024-06-07T02:42:19.545Z"
+   },
+   {
+    "duration": 31,
+    "start_time": "2024-06-07T02:45:09.041Z"
+   },
+   {
+    "duration": 15,
+    "start_time": "2024-06-07T02:45:27.245Z"
+   },
+   {
+    "duration": 0,
+    "start_time": "2024-06-07T02:48:22.180Z"
+   },
+   {
+    "duration": 820,
+    "start_time": "2024-06-07T02:49:15.860Z"
+   },
+   {
+    "duration": 796,
+    "start_time": "2024-06-07T02:49:33.914Z"
+   },
+   {
+    "duration": 5,
+    "start_time": "2024-06-07T02:49:49.406Z"
+   },
+   {
+    "duration": 790,
+    "start_time": "2024-06-07T02:49:52.799Z"
+   },
+   {
+    "duration": 798,
+    "start_time": "2024-06-07T02:50:12.577Z"
+   },
+   {
+    "duration": 770,
+    "start_time": "2024-06-07T02:50:31.945Z"
+   },
+   {
+    "duration": 0,
+    "start_time": "2024-06-07T03:26:16.847Z"
+   },
+   {
+    "duration": 0,
+    "start_time": "2024-06-07T03:26:16.853Z"
+   },
+   {
+    "duration": 319,
+    "start_time": "2024-06-07T13:56:08.090Z"
+   },
+   {
+    "duration": 1245,
+    "start_time": "2024-06-07T13:56:14.507Z"
+   },
+   {
+    "duration": 22,
+    "start_time": "2024-06-07T13:56:16.491Z"
+   },
+   {
+    "duration": 44,
+    "start_time": "2024-06-07T13:56:17.100Z"
+   },
+   {
+    "duration": 15,
+    "start_time": "2024-06-07T13:56:19.586Z"
+   },
+   {
+    "duration": 10,
+    "start_time": "2024-06-07T13:56:20.131Z"
+   },
+   {
+    "duration": 5,
+    "start_time": "2024-06-07T13:56:20.713Z"
+   },
+   {
+    "duration": 14,
+    "start_time": "2024-06-07T13:56:21.838Z"
+   },
+   {
+    "duration": 18,
+    "start_time": "2024-06-07T13:56:22.591Z"
+   },
+   {
+    "duration": 21,
+    "start_time": "2024-06-07T13:56:23.228Z"
+   },
+   {
+    "duration": 1294,
+    "start_time": "2024-06-07T13:56:24.482Z"
+   },
+   {
+    "duration": 1202,
+    "start_time": "2024-06-10T01:14:48.265Z"
+   },
+   {
+    "duration": 18,
+    "start_time": "2024-06-10T01:14:49.470Z"
+   },
+   {
+    "duration": 35,
+    "start_time": "2024-06-10T01:14:50.127Z"
+   },
+   {
+    "duration": 13,
+    "start_time": "2024-06-10T01:14:51.155Z"
+   },
+   {
+    "duration": 8,
+    "start_time": "2024-06-10T01:14:52.130Z"
+   },
+   {
+    "duration": 4,
+    "start_time": "2024-06-10T01:14:54.338Z"
+   },
+   {
+    "duration": 12,
+    "start_time": "2024-06-10T01:14:55.172Z"
+   },
+   {
+    "duration": 17,
+    "start_time": "2024-06-10T01:14:57.452Z"
+   },
+   {
+    "duration": 16,
+    "start_time": "2024-06-10T01:14:59.121Z"
+   },
+   {
+    "duration": 1272,
+    "start_time": "2024-06-10T01:14:59.933Z"
+   },
+   {
+    "duration": 817,
+    "start_time": "2024-06-10T01:15:01.209Z"
+   },
+   {
+    "duration": 1211,
+    "start_time": "2024-06-10T01:20:28.456Z"
+   },
+   {
+    "duration": 29,
+    "start_time": "2024-06-10T01:20:29.678Z"
+   },
+   {
+    "duration": 38,
+    "start_time": "2024-06-10T01:20:29.837Z"
+   },
+   {
+    "duration": 14,
+    "start_time": "2024-06-10T01:20:30.815Z"
+   },
+   {
+    "duration": 10,
+    "start_time": "2024-06-10T01:20:32.067Z"
+   },
+   {
+    "duration": 5,
+    "start_time": "2024-06-10T01:20:33.002Z"
+   },
+   {
+    "duration": 12,
+    "start_time": "2024-06-10T01:20:38.341Z"
+   },
+   {
+    "duration": 16,
+    "start_time": "2024-06-10T01:20:39.700Z"
+   },
+   {
+    "duration": 16,
+    "start_time": "2024-06-10T01:20:40.880Z"
+   },
+   {
+    "duration": 1288,
+    "start_time": "2024-06-10T01:20:42.481Z"
+   },
+   {
+    "duration": 791,
+    "start_time": "2024-06-10T01:20:43.905Z"
+   },
+   {
+    "duration": 8,
+    "start_time": "2024-06-10T01:20:46.616Z"
+   },
+   {
+    "duration": 1230,
+    "start_time": "2024-06-10T01:21:25.743Z"
+   },
+   {
+    "duration": 1212,
+    "start_time": "2024-06-10T01:21:35.085Z"
+   },
+   {
+    "duration": 13,
+    "start_time": "2024-06-10T01:21:36.306Z"
+   },
+   {
+    "duration": 41,
+    "start_time": "2024-06-10T01:21:36.322Z"
+   },
+   {
+    "duration": 13,
+    "start_time": "2024-06-10T01:21:37.271Z"
+   },
+   {
+    "duration": 9,
+    "start_time": "2024-06-10T01:21:38.307Z"
+   },
+   {
+    "duration": 5,
+    "start_time": "2024-06-10T01:21:39.279Z"
+   },
+   {
+    "duration": 13,
+    "start_time": "2024-06-10T01:21:41.736Z"
+   },
+   {
+    "duration": 17,
+    "start_time": "2024-06-10T01:21:45.277Z"
+   },
+   {
+    "duration": 16,
+    "start_time": "2024-06-10T01:21:46.521Z"
+   },
+   {
+    "duration": 1245,
+    "start_time": "2024-06-10T01:21:47.670Z"
+   },
+   {
+    "duration": 803,
+    "start_time": "2024-06-10T01:21:49.250Z"
+   },
+   {
+    "duration": 679260,
+    "start_time": "2024-06-10T01:21:51.264Z"
+   },
+   {
+    "duration": 6,
+    "start_time": "2024-06-10T01:46:29.135Z"
+   },
+   {
+    "duration": 27,
+    "start_time": "2024-06-10T01:48:20.970Z"
+   },
+   {
+    "duration": 465,
+    "start_time": "2024-06-10T01:49:23.122Z"
+   },
+   {
+    "duration": 1256,
+    "start_time": "2024-06-10T01:54:20.195Z"
+   },
+   {
+    "duration": 8,
+    "start_time": "2024-06-10T02:01:07.894Z"
+   },
+   {
+    "duration": 27,
+    "start_time": "2024-06-10T02:07:55.896Z"
+   },
+   {
+    "duration": 28,
+    "start_time": "2024-06-10T02:08:37.678Z"
+   },
+   {
+    "duration": 26,
+    "start_time": "2024-06-10T02:09:06.733Z"
+   },
+   {
+    "duration": 7,
+    "start_time": "2024-06-10T02:10:49.610Z"
+   },
+   {
+    "duration": 37,
+    "start_time": "2024-06-10T02:12:29.125Z"
+   },
+   {
+    "duration": 322,
+    "start_time": "2024-06-10T19:06:33.613Z"
+   },
+   {
+    "duration": 1275,
+    "start_time": "2024-06-10T19:06:47.294Z"
+   },
+   {
+    "duration": 18,
+    "start_time": "2024-06-10T19:06:48.959Z"
+   },
+   {
+    "duration": 36,
+    "start_time": "2024-06-10T19:06:50.297Z"
+   },
+   {
+    "duration": 12,
+    "start_time": "2024-06-10T19:06:56.413Z"
+   },
+   {
+    "duration": 9,
+    "start_time": "2024-06-10T19:06:57.403Z"
+   },
+   {
+    "duration": 5,
+    "start_time": "2024-06-10T19:06:58.240Z"
+   },
+   {
+    "duration": 12,
+    "start_time": "2024-06-10T19:07:04.645Z"
+   },
+   {
+    "duration": 16,
+    "start_time": "2024-06-10T19:07:06.258Z"
+   },
+   {
+    "duration": 16,
+    "start_time": "2024-06-10T19:07:07.593Z"
+   },
+   {
+    "duration": 1669,
+    "start_time": "2024-06-10T19:07:09.116Z"
+   },
+   {
+    "duration": 780,
+    "start_time": "2024-06-10T19:07:11.176Z"
+   },
+   {
+    "duration": 346,
+    "start_time": "2024-06-10T19:09:07.702Z"
+   },
+   {
+    "duration": 1242,
+    "start_time": "2024-06-10T19:09:22.712Z"
+   },
+   {
+    "duration": 12,
+    "start_time": "2024-06-10T19:09:28.074Z"
+   },
+   {
+    "duration": 35,
+    "start_time": "2024-06-10T19:09:29.633Z"
+   },
+   {
+    "duration": 14,
+    "start_time": "2024-06-10T19:09:31.752Z"
+   },
+   {
+    "duration": 10,
+    "start_time": "2024-06-10T19:09:32.817Z"
+   },
+   {
+    "duration": 6,
+    "start_time": "2024-06-10T19:09:33.718Z"
+   },
+   {
+    "duration": 12,
+    "start_time": "2024-06-10T19:09:37.159Z"
+   },
+   {
+    "duration": 16,
+    "start_time": "2024-06-10T19:09:39.352Z"
+   },
+   {
+    "duration": 16,
+    "start_time": "2024-06-10T19:09:42.072Z"
+   },
+   {
+    "duration": 1349,
+    "start_time": "2024-06-10T19:09:44.447Z"
+   },
+   {
+    "duration": 1240,
+    "start_time": "2024-06-10T19:10:04.482Z"
+   },
+   {
+    "duration": 773,
+    "start_time": "2024-06-10T19:10:14.894Z"
+   },
+   {
+    "duration": 1220,
+    "start_time": "2024-06-10T19:10:30.931Z"
+   },
+   {
+    "duration": 12,
+    "start_time": "2024-06-10T19:10:32.155Z"
+   },
+   {
+    "duration": 47,
+    "start_time": "2024-06-10T19:10:32.170Z"
+   },
+   {
+    "duration": 14,
+    "start_time": "2024-06-10T19:10:32.220Z"
+   },
+   {
+    "duration": 7,
+    "start_time": "2024-06-10T19:10:32.241Z"
+   },
+   {
+    "duration": 6,
+    "start_time": "2024-06-10T19:10:32.252Z"
+   },
+   {
+    "duration": 13,
+    "start_time": "2024-06-10T19:10:32.301Z"
+   },
+   {
+    "duration": 18,
+    "start_time": "2024-06-10T19:10:32.316Z"
+   },
+   {
+    "duration": 17,
+    "start_time": "2024-06-10T19:10:32.337Z"
+   },
+   {
+    "duration": 1699,
+    "start_time": "2024-06-10T19:10:32.357Z"
+   },
+   {
+    "duration": 0,
+    "start_time": "2024-06-10T19:10:34.060Z"
+   },
+   {
+    "duration": 0,
+    "start_time": "2024-06-10T19:10:34.061Z"
+   },
+   {
+    "duration": 0,
+    "start_time": "2024-06-10T19:10:34.063Z"
+   },
+   {
+    "duration": 0,
+    "start_time": "2024-06-10T19:10:34.065Z"
+   },
+   {
+    "duration": 0,
+    "start_time": "2024-06-10T19:10:34.067Z"
+   },
+   {
+    "duration": 1235,
+    "start_time": "2024-06-10T19:11:19.677Z"
+   },
+   {
+    "duration": 818,
+    "start_time": "2024-06-10T19:11:26.632Z"
+   },
+   {
+    "duration": 833,
+    "start_time": "2024-06-10T19:11:35.643Z"
+   },
+   {
+    "duration": 316,
+    "start_time": "2024-06-10T19:19:04.380Z"
+   },
+   {
+    "duration": 1221,
+    "start_time": "2024-06-10T19:19:11.598Z"
+   },
+   {
+    "duration": 13,
+    "start_time": "2024-06-10T19:19:13.661Z"
+   },
+   {
+    "duration": 36,
+    "start_time": "2024-06-10T19:19:15.140Z"
+   },
+   {
+    "duration": 12,
+    "start_time": "2024-06-10T19:19:16.443Z"
+   },
+   {
+    "duration": 9,
+    "start_time": "2024-06-10T19:19:17.066Z"
+   },
+   {
+    "duration": 5,
+    "start_time": "2024-06-10T19:19:18.431Z"
+   },
+   {
+    "duration": 13,
+    "start_time": "2024-06-10T19:19:20.506Z"
+   },
+   {
+    "duration": 17,
+    "start_time": "2024-06-10T19:19:22.082Z"
+   },
+   {
+    "duration": 17,
+    "start_time": "2024-06-10T19:19:23.179Z"
+   },
+   {
+    "duration": 1235,
+    "start_time": "2024-06-10T19:19:24.298Z"
+   },
+   {
+    "duration": 828,
+    "start_time": "2024-06-10T19:19:27.675Z"
+   },
+   {
+    "duration": 316,
+    "start_time": "2024-06-10T19:22:21.418Z"
+   },
+   {
+    "duration": 1249,
+    "start_time": "2024-06-10T19:22:25.263Z"
+   },
+   {
+    "duration": 15,
+    "start_time": "2024-06-10T19:22:28.162Z"
+   },
+   {
+    "duration": 67,
+    "start_time": "2024-06-10T19:22:29.623Z"
+   },
+   {
+    "duration": 15,
+    "start_time": "2024-06-10T19:22:32.035Z"
+   },
+   {
+    "duration": 9,
+    "start_time": "2024-06-10T19:22:32.603Z"
+   },
+   {
+    "duration": 5,
+    "start_time": "2024-06-10T19:22:33.102Z"
+   },
+   {
+    "duration": 13,
+    "start_time": "2024-06-10T19:22:34.707Z"
+   },
+   {
+    "duration": 24,
+    "start_time": "2024-06-10T19:22:35.857Z"
+   },
+   {
+    "duration": 19,
+    "start_time": "2024-06-10T19:22:36.961Z"
+   },
+   {
+    "duration": 1391,
+    "start_time": "2024-06-10T19:22:38.395Z"
+   },
+   {
+    "duration": 911,
+    "start_time": "2024-06-10T19:22:42.023Z"
+   },
+   {
+    "duration": 1272,
+    "start_time": "2024-06-10T19:31:55.776Z"
+   },
+   {
+    "duration": 11,
+    "start_time": "2024-06-10T19:31:57.054Z"
+   },
+   {
+    "duration": 53,
+    "start_time": "2024-06-10T19:31:57.070Z"
+   },
+   {
+    "duration": 15,
+    "start_time": "2024-06-10T19:31:57.130Z"
+   },
+   {
+    "duration": 12,
+    "start_time": "2024-06-10T19:31:57.149Z"
+   },
+   {
+    "duration": 39,
+    "start_time": "2024-06-10T19:31:57.164Z"
+   },
+   {
+    "duration": 13,
+    "start_time": "2024-06-10T19:31:57.207Z"
+   },
+   {
+    "duration": 24,
+    "start_time": "2024-06-10T19:31:57.223Z"
+   },
+   {
+    "duration": 57,
+    "start_time": "2024-06-10T19:31:57.250Z"
+   },
+   {
+    "duration": 1360,
+    "start_time": "2024-06-10T19:31:57.316Z"
+   },
+   {
+    "duration": 811,
+    "start_time": "2024-06-10T19:31:58.680Z"
+   },
+   {
+    "duration": 1160,
+    "start_time": "2024-06-10T19:39:11.046Z"
+   },
+   {
+    "duration": 15,
+    "start_time": "2024-06-10T19:39:12.667Z"
+   },
+   {
+    "duration": 36,
+    "start_time": "2024-06-10T19:39:15.687Z"
+   },
+   {
+    "duration": 13,
+    "start_time": "2024-06-10T19:39:18.731Z"
+   },
+   {
+    "duration": 8,
+    "start_time": "2024-06-10T19:39:20.291Z"
+   },
+   {
+    "duration": 4,
+    "start_time": "2024-06-10T19:39:21.645Z"
+   },
+   {
+    "duration": 13,
+    "start_time": "2024-06-10T19:39:25.251Z"
+   },
+   {
+    "duration": 18,
+    "start_time": "2024-06-10T19:39:27.412Z"
+   },
+   {
+    "duration": 17,
+    "start_time": "2024-06-10T19:39:29.483Z"
+   },
+   {
+    "duration": 1251,
+    "start_time": "2024-06-10T19:39:31.685Z"
+   },
+   {
+    "duration": 800,
+    "start_time": "2024-06-10T19:39:35.327Z"
+   },
+   {
+    "duration": 676791,
+    "start_time": "2024-06-10T19:39:37.604Z"
+   },
+   {
+    "duration": 7,
+    "start_time": "2024-06-10T20:05:12.183Z"
+   },
+   {
+    "duration": 8,
+    "start_time": "2024-06-10T20:05:12.867Z"
+   },
+   {
+    "duration": 67,
+    "start_time": "2024-06-10T20:05:13.524Z"
+   },
+   {
+    "duration": 1228,
+    "start_time": "2024-06-10T20:50:11.164Z"
+   },
+   {
+    "duration": 18,
+    "start_time": "2024-06-10T20:50:12.396Z"
+   },
+   {
+    "duration": 38,
+    "start_time": "2024-06-10T20:50:12.417Z"
+   },
+   {
+    "duration": 15,
+    "start_time": "2024-06-10T20:50:12.458Z"
+   },
+   {
+    "duration": 9,
+    "start_time": "2024-06-10T20:50:12.479Z"
+   },
+   {
+    "duration": 7,
+    "start_time": "2024-06-10T20:50:12.523Z"
+   },
+   {
+    "duration": 13,
+    "start_time": "2024-06-10T20:50:12.533Z"
+   },
+   {
+    "duration": 17,
+    "start_time": "2024-06-10T20:50:12.548Z"
+   },
+   {
+    "duration": 61,
+    "start_time": "2024-06-10T20:50:12.568Z"
+   },
+   {
+    "duration": 1279,
+    "start_time": "2024-06-10T20:50:12.632Z"
+   },
+   {
+    "duration": 804,
+    "start_time": "2024-06-10T20:50:13.914Z"
+   }
+  ],
+  "kernelspec": {
+   "display_name": "Python 3 (ipykernel)",
+   "language": "python",
+   "name": "python3"
+  },
+  "language_info": {
+   "codemirror_mode": {
+    "name": "ipython",
+    "version": 3
+   },
+   "file_extension": ".py",
+   "mimetype": "text/x-python",
+   "name": "python",
+   "nbconvert_exporter": "python",
+   "pygments_lexer": "ipython3",
+   "version": "3.9.19"
+  },
+  "toc": {
+   "base_numbering": 1,
+   "nav_menu": {},
+   "number_sections": true,
+   "sideBar": true,
+   "skip_h1_title": true,
+   "title_cell": "Table of Contents",
+   "title_sidebar": "Contents",
+   "toc_cell": false,
+   "toc_position": {},
+   "toc_section_display": true,
+   "toc_window_display": true
+  }
+ },
+ "nbformat": 4,
+ "nbformat_minor": 2
+}
