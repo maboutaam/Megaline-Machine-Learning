@@ -2,15 +2,6 @@
 # 
 # ### The purpose of this project is to create a model that would evaluate the behavior of subscribers and suggest either Smart or Ultra, two of Megaline's most recent plans. This would boost the company's strength in the market and assist in driving more revenue.
 
-# <div class="alert alert-block alert-success">✔️
-#     
-# 
-# __Reviewer's comment №1__
-# 
-# An excellent practice is to describe the goal and main steps in your own words (a skill that will help a lot on a final project). 
-
-# In[1]:
-
 
 # Libraries
 
@@ -94,17 +85,6 @@ X_valid, X_test, y_valid, y_test = train_test_split(X_temp, y_temp, test_size=0.
 
 X_train.shape, X_valid.shape, X_test.shape
 
-
-# <div class="alert alert-block alert-warning">📝
-#     
-# 
-# __Reviewer's comment №1__
-# 
-# 
-# 1. It is good here, random_state is fixed. We have ensured reproducibility of the results of splitting the sample into training (training) / test / validation samples, so the subsamples will be identical in all subsequent runs of our code.
-#     
-# 2. Fraction of train/valid/test sizes 3:1:1 is good.
-# </div>
 
 # ### The shapes of resulting datasets are: 2249 samples and 4 features each, 482 samples and 4 features each, 483 samples and 4 features each.
 
@@ -313,12 +293,3 @@ print(f"Accuracy of the Random Forest Model on the test set: {accuracy_test_rf:.
 # Implementing this Machine Learning model (Random Forest) helps in reducing cost and increasing efficiency.
 # 
 # Random Forest model will help Megaline management recommend their newer plans: Smart or Ultra.
-
-# <div class="alert alert-block alert-success">✔️
-#     
-# 
-# __Reviewer's comment №1__
-# 
-# Here's the great thing: we picked the best hyperparameters for all our models (in this case, maximizing the accuracy_score metric). Here we also identified the MOST optimal model. On validation, it turned out to be the "random forest" model.
-# 
-# After the hyperparameters are selected for validation, we test the models on the test data. Based on the results of testing on the test (sorry for the tautalogy), we choose a model that we can pass to production.
